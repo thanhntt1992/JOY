@@ -1817,14 +1817,22 @@ textarea.form-control {
   padding: 4px 10px 4px 6px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
+.user-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .user-profile-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--bg-hover);
+  border-color: var(--border-default);
 }
 
 .user-avatar-small {
@@ -1838,32 +1846,39 @@ textarea.form-control {
   font-size: 12px;
   font-weight: 700;
   color: #ffffff;
+  flex-shrink: 0;
 }
 
 .user-name-small {
   font-size: 13px;
   font-weight: 600;
-  color: #f1f5f9;
+  color: var(--text-main);
+  white-space: nowrap;
 }
 
 .btn-logout {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #f87171;
-  padding: 6px 12px;
-  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  padding: 0 12px;
+  height: 36px;
+  border-radius: var(--radius-sm);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
 .btn-logout:hover {
-  background: rgba(239, 68, 68, 0.25);
+  background: #ef4444;
   color: #ffffff;
+  border-color: #ef4444;
 }
 
 /* ================================================================

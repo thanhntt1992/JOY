@@ -51,14 +51,26 @@ const JoyApp = {
 
   // Sự kiện lắng nghe
   initEventListeners() {
-    // Menu mobile toggle
+    // Menu mobile toggle & backdrop
     const mobileBtn = document.getElementById('mobileMenuBtn');
-    const sidebar = document.getElementById('appSidebar');
-    if (mobileBtn && sidebar) {
-      mobileBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    const closeBtn = document.getElementById('sidebarCloseBtn');
+
+    if (mobileBtn) mobileBtn.addEventListener('click', () => this.openMobileSidebar());
+    if (closeBtn) closeBtn.addEventListener('click', () => this.closeMobileSidebar());
+    if (backdrop) backdrop.addEventListener('click', () => this.closeMobileSidebar());
+
+    // Tự động đóng sidebar trên mobile khi bấm vào link chuyển trang
+    document.querySelectorAll('.sidebar-menu .nav-item').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 1024) this.closeMobileSidebar();
       });
-    }
+    });
+
+    // Đóng sidebar khi nhấn phím Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') this.closeMobileSidebar();
+    });
 
     // Thanh tìm kiếm nhanh trên Header
     const globalSearch = document.getElementById('globalSearchInput');
@@ -328,9 +340,8 @@ const JoyApp = {
     const targetView = document.getElementById(`view-${pageId}`);
     if (targetView) targetView.classList.add('active');
 
-    // Đóng sidebar mobile
-    const sidebar = document.getElementById('appSidebar');
-    if (sidebar) sidebar.classList.remove('open');
+    // Đóng sidebar mobile & backdrop
+    this.closeMobileSidebar();
 
     // Render nội dung tương ứng
     if (pageId === 'dashboard') this.renderDashboard();
@@ -338,6 +349,22 @@ const JoyApp = {
     if (pageId === 'documents') this.renderDocumentsAudit();
     if (pageId === 'projects') this.renderProjectsGrid();
     if (pageId === 'settings') this.loadTelegramSettingsUI();
+  },
+
+  openMobileSidebar() {
+    const sidebar = document.getElementById('appSidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (sidebar) sidebar.classList.add('open');
+    if (backdrop) backdrop.classList.add('active');
+    if (window.innerWidth <= 1024) document.body.style.overflow = 'hidden';
+  },
+
+  closeMobileSidebar() {
+    const sidebar = document.getElementById('appSidebar');
+    const backdrop = document.getElementById('sidebarBackdrop');
+    if (sidebar) sidebar.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('active');
+    document.body.style.overflow = '';
   },
 
   // Làm mới toàn bộ dữ liệu giao diện
