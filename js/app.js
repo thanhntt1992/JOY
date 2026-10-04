@@ -2340,6 +2340,26 @@ const JoyApp = {
     }
   },
 
+  // Gửi trực tiếp tin nhắn Telegram từ trình duyệt thông qua HTTPS Telegram Bot API
+  async sendTelegramDirect(botToken, chatId, text) {
+    try {
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: text,
+          parse_mode: 'Markdown'
+        })
+      });
+      return await res.json();
+    } catch (e) {
+      console.warn('Telegram direct fetch error:', e);
+      return { ok: false, description: e.message || 'Lỗi mạng khi kết nối Telegram' };
+    }
+  },
+
   async handleRequestOtpSubmit(e) {
     if (e) e.preventDefault();
     const emailInput = document.getElementById('authEmailInput');
@@ -2353,66 +2373,110 @@ const JoyApp = {
       btn.innerHTML = '<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">sync</span> Đang gửi OTP...';
     }
 
+    // Đọc cấu hình bot từ storage hoặc từ ô quick config
     const cfg = HRStorage.getTelegramConfig();
+    const quickBot = document.getElementById('authQuickBotToken');
+    const quickChat = document.getElementById('authQuickChatId');
+    const botToken = (quickBot && quickBot.value.trim()) || cfg.botToken || '';
+    const chatId = (quickChat && quickChat.value.trim()) || cfg.chatId || '';
 
+    // Tự động lưu nếu người dùng đã gõ vào ô cấu hình nhanh
+    if (botToken || chatId) {
+      HRStorage.saveTelegramConfig({ botToken, chatId });
+    }
+
+    // Luôn sinh mã OTP 6 chữ số an toàn
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    sessionStorage.setItem('joygames_current_otp', otp);
+    sessionStorage.setItem('joygames_otp_email', email);
+    sessionStorage.setItem('joygames_otp_expires', Date.now() + 5 * 60 * 1000);
+
+    let sentToTelegram = false;
+    let errorDesc = '';
+
+    // 1. Thử qua Vercel/Local Serverless API trước (nếu có server chạy)
+    let apiHandled = false;
     try {
       const res = await fetch('/api/send-telegram-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          botToken: cfg.botToken || '',
-          chatId: cfg.chatId || ''
-        })
+        body: JSON.stringify({ email, botToken, chatId })
       });
-
-      const data = await res.json();
-      if (data.success) {
-        // Cập nhật thông báo bước 2
-        const banner = document.getElementById('authStep2Banner');
-        if (banner) {
-          if (data.sentToTelegram) {
-            banner.innerHTML = `
-              <span class="material-symbols-outlined" style="font-size: 20px; color: #4ade80; flex-shrink: 0;">check_circle</span>
-              <div>Mã OTP 6 số đã được gửi trực tiếp vào <strong>Telegram</strong> của bạn! Vui lòng kiểm tra tin nhắn bot.</div>
-            `;
-          } else {
-            banner.innerHTML = `
-              <span class="material-symbols-outlined" style="font-size: 20px; color: #38bdf8; flex-shrink: 0;">info</span>
-              <div>Chưa cấu hình Telegram Bot. Bạn có thể sử dụng mã OTP hệ thống tạo hiển thị bên dưới hoặc mã khẩn cấp <strong>888888</strong>.</div>
-            `;
+      if (res.ok) {
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const data = await res.json();
+          if (data.success) {
+            sentToTelegram = data.sentToTelegram;
+            apiHandled = true;
           }
         }
+      }
+    } catch (e) {
+      // Bỏ qua lỗi server và chuyển sang chế độ client-direct
+    }
 
-        // Cập nhật demo OTP display
-        const demoDisplay = document.getElementById('demoOtpDisplay');
-        if (demoDisplay) {
-          demoDisplay.textContent = data.demoOtp || '888888';
-        }
+    // 2. Nếu API không khả dụng và người dùng có điền Bot Token + Chat ID -> Bắn trực tiếp từ trình duyệt
+    if (!apiHandled && botToken && chatId) {
+      const now = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const msg = `🎮 *JOYGAMES HR PORTAL - MÃ XÁC THỰC OTP (2FA)*\n` +
+                  `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                  `Mã OTP bảo mật của bạn là: \`${otp}\`\n\n` +
+                  `⏰ Thời gian: *${now}*\n` +
+                  `⏳ Hiệu lực: *5 phút*\n` +
+                  `⚠️ _Tuyệt đối không chia sẻ mã này cho bất kỳ ai!_`;
 
-        // Chuyển sang bước 2
-        document.getElementById('authStep1').classList.remove('active');
-        document.getElementById('authStep2').classList.add('active');
-        this.clearOtpInputs();
-
-        setTimeout(() => {
-          const first = document.getElementById('otp1');
-          if (first) first.focus();
-        }, 150);
-
-        this.startResendCountdown();
-        this.showToast(data.sentToTelegram ? 'Mã OTP đã được gửi đến Telegram!' : 'Mã xác thực đã sẵn sàng!', 'success');
+      const tgRes = await this.sendTelegramDirect(botToken, chatId, msg);
+      if (tgRes && tgRes.ok) {
+        sentToTelegram = true;
       } else {
-        this.showToast(data.message || 'Không thể tạo mã OTP', 'error');
+        errorDesc = tgRes ? tgRes.description : 'Không gửi được tin nhắn';
       }
-    } catch (err) {
-      console.error(err);
-      this.showToast('Lỗi kết nối tới máy chủ xác thực!', 'error');
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
+    }
+
+    // Cập nhật giao diện bước 2
+    const banner = document.getElementById('authStep2Banner');
+    if (banner) {
+      if (sentToTelegram) {
+        banner.innerHTML = `
+          <span class="material-symbols-outlined" style="font-size: 20px; color: #4ade80; flex-shrink: 0;">check_circle</span>
+          <div>Mã OTP 6 số đã được gửi trực tiếp vào <strong>Telegram</strong> của bạn! Vui lòng kiểm tra tin nhắn bot.</div>
+        `;
+      } else if (botToken && chatId) {
+        banner.innerHTML = `
+          <span class="material-symbols-outlined" style="font-size: 20px; color: #f59e0b; flex-shrink: 0;">warning</span>
+          <div>Lỗi gửi Telegram: <em>${errorDesc || 'Kiểm tra lại Token/ChatId'}</em>.<br>Mã xác thực của bạn là: <strong>${otp}</strong> (hoặc mã dự phòng <strong>888888</strong>).</div>
+        `;
+      } else {
+        banner.innerHTML = `
+          <span class="material-symbols-outlined" style="font-size: 20px; color: #38bdf8; flex-shrink: 0;">info</span>
+          <div>Chưa cấu hình Telegram Bot. Bạn có thể sử dụng mã OTP hệ thống tạo hiển thị bên dưới hoặc mã khẩn cấp <strong>888888</strong>.</div>
+        `;
       }
+    }
+
+    // Cập nhật demo OTP display
+    const demoDisplay = document.getElementById('demoOtpDisplay');
+    if (demoDisplay) {
+      demoDisplay.textContent = otp;
+    }
+
+    // Chuyển sang bước 2
+    document.getElementById('authStep1').classList.remove('active');
+    document.getElementById('authStep2').classList.add('active');
+    this.clearOtpInputs();
+
+    setTimeout(() => {
+      const first = document.getElementById('otp1');
+      if (first) first.focus();
+    }, 150);
+
+    this.startResendCountdown();
+    this.showToast(sentToTelegram ? 'Mã OTP đã được gửi đến Telegram!' : 'Mã xác thực đã sẵn sàng!', 'success');
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
     }
   },
 
@@ -2431,41 +2495,53 @@ const JoyApp = {
       btn.innerHTML = '<span class="material-symbols-outlined" style="animation: spin 1s linear infinite;">sync</span> Đang xác thực...';
     }
 
-    try {
-      const res = await fetch('/api/verify-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: this.pendingAuthEmail || 'hr@joygames.vn',
-          otp
-        })
-      });
+    const email = this.pendingAuthEmail || 'hr@joygames.vn';
+    const localOtp = sessionStorage.getItem('joygames_current_otp');
+    const expires = parseInt(sessionStorage.getItem('joygames_otp_expires') || '0', 10);
 
-      const data = await res.json();
-      if (data.success) {
-        HRStorage.setSession(data.email, data.token);
-        const overlay = document.getElementById('authGateOverlay');
-        if (overlay) overlay.classList.add('hidden');
-        this.updateHeaderUserProfile(data.email);
-        this.showToast('Xác thực Telegram 2FA thành công! Chào mừng bạn vào cổng HR JoyGames.', 'success');
-      } else {
-        this.showToast(data.message || 'Mã xác thực OTP không chính xác!', 'error');
-        // Hiệu ứng rung nhẹ
-        const row = document.getElementById('otpRow');
-        if (row) {
-          row.style.transform = 'translateX(-8px)';
-          setTimeout(() => row.style.transform = 'translateX(8px)', 100);
-          setTimeout(() => row.style.transform = 'translateX(0)', 200);
+    // Xác thực: Mã master 888888, 123456 hoặc mã local vừa tạo
+    let isValid = false;
+    if (otp === '888888' || otp === '123456') {
+      isValid = true;
+    } else if (localOtp && otp === localOtp && Date.now() <= expires) {
+      isValid = true;
+    } else {
+      // Thử gọi server nếu có
+      try {
+        const res = await fetch('/api/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, otp })
+        });
+        if (res.ok) {
+          const ct = res.headers.get('content-type') || '';
+          if (ct.includes('application/json')) {
+            const data = await res.json();
+            if (data.success) isValid = true;
+          }
         }
+      } catch (err) {}
+    }
+
+    if (isValid) {
+      HRStorage.setSession(email, 'token-' + Date.now());
+      const overlay = document.getElementById('authGateOverlay');
+      if (overlay) overlay.classList.add('hidden');
+      this.updateHeaderUserProfile(email);
+      this.showToast('Xác thực Telegram 2FA thành công! Chào mừng bạn vào cổng HR JoyGames.', 'success');
+    } else {
+      this.showToast('Mã xác thực OTP không chính xác hoặc đã hết hạn!', 'error');
+      const row = document.getElementById('otpRow');
+      if (row) {
+        row.style.transform = 'translateX(-8px)';
+        setTimeout(() => row.style.transform = 'translateX(8px)', 100);
+        setTimeout(() => row.style.transform = 'translateX(0)', 200);
       }
-    } catch (err) {
-      console.error(err);
-      this.showToast('Lỗi kết nối khi xác thực OTP!', 'error');
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-      }
+    }
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
     }
   },
 
@@ -2585,22 +2661,53 @@ const JoyApp = {
     if (resultSpan) resultSpan.innerHTML = '<span style="color: #38bdf8;">Đang kết nối tới Telegram API...</span>';
 
     try {
-      const res = await fetch('/api/test-telegram', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ botToken, chatId })
-      });
-      const data = await res.json();
-      if (data.success) {
+      const msg = `🎉 *JOYGAMES HR PORTAL - KẾT NỐI THÀNH CÔNG*\n` +
+                  `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                  `Hệ thống quản lý nhân sự JoyGames đã liên kết thành công với tài khoản Telegram này để gửi mã OTP bảo mật 2 lớp (2FA)!`;
+
+      let success = false;
+      let errorMsg = '';
+
+      // 1. Thử qua Vercel/Local Serverless API
+      try {
+        const res = await fetch('/api/test-telegram', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ botToken, chatId })
+        });
+        if (res.ok) {
+          const ct = res.headers.get('content-type') || '';
+          if (ct.includes('application/json')) {
+            const data = await res.json();
+            if (data.success) {
+              success = true;
+            } else {
+              errorMsg = data.message;
+            }
+          }
+        }
+      } catch (e) {}
+
+      // 2. Nếu API không khả dụng, gọi trực tiếp Telegram Bot API từ trình duyệt
+      if (!success && !errorMsg) {
+        const tgRes = await this.sendTelegramDirect(botToken, chatId, msg);
+        if (tgRes && tgRes.ok) {
+          success = true;
+        } else {
+          errorMsg = tgRes ? tgRes.description : 'Không thể kết nối Telegram';
+        }
+      }
+
+      if (success) {
         if (resultSpan) {
           resultSpan.innerHTML = '<span style="color: #4ade80; font-weight: 600;">✔ Đã gửi tin nhắn test tới Telegram thành công!</span>';
         }
         this.showToast('Đã gửi tin nhắn kiểm tra tới Telegram thành công!', 'success');
       } else {
         if (resultSpan) {
-          resultSpan.innerHTML = `<span style="color: #f87171;">✖ Thất bại: ${data.message || 'Lỗi'}</span>`;
+          resultSpan.innerHTML = `<span style="color: #f87171;">✖ Thất bại: ${errorMsg || 'Lỗi kết nối'}</span>`;
         }
-        this.showToast(data.message || 'Không gửi được tin nhắn Telegram', 'error');
+        this.showToast(errorMsg || 'Không gửi được tin nhắn Telegram', 'error');
       }
     } catch (err) {
       if (resultSpan) {
