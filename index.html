@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="JoyGames HR Portal - Hệ thống số hóa quản lý, lưu trữ và tra cứu hồ sơ nhân sự thông minh cho Studio Game JoyGames">
+  <meta name="author" content="JoyGames Studio">
+  <title>JoyGames HR Portal - Quản Lý & Lưu Trữ Hồ Sơ Nhân Sự</title>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/print.css">
+  <base href="/">
+
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" id="appSidebar">
+      <div class="sidebar-header">
+        <a href="/dashboard" class="sidebar-brand">
+          <div class="brand-logo-icon">
+            <svg width="38" height="38" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="joyGradSidebar" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FF4B2B" />
+                  <stop offset="50%" stop-color="#FF416C" />
+                  <stop offset="100%" stop-color="#8A2387" />
+                </linearGradient>
+              </defs>
+              <rect x="0" y="0" width="70" height="70" rx="18" fill="url(#joyGradSidebar)" />
+              <path d="M22 35h26M35 22v26" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+              <circle cx="50" cy="27" r="3.5" fill="#ffffff" />
+              <circle cx="56" cy="35" r="3.5" fill="#FFE600" />
+              <path d="M54 14L55.5 8L57 14L63 15.5L57 17L55.5 23L54 17L48 15.5Z" fill="#FFE600"/>
+            </svg>
+          </div>
+          <div class="brand-text-wrap">
+            <div class="brand-title">
+              JOY<span>GAMES</span>
+              <span class="brand-badge-pill">HR</span>
+            </div>
+            <div class="brand-sub">HỒ SƠ NHÂN SỰ</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="sidebar-menu">
+        <span class="nav-section-title">Menu Chính</span>
+        
+        <a href="/dashboard" class="nav-item active" data-page="dashboard">
+          <span class="material-symbols-outlined nav-icon">dashboard</span>
+          <span>Bảng Điều Khiển</span>
+        </a>
+
+        <a href="/employees" class="nav-item" data-page="employees">
+          <span class="material-symbols-outlined nav-icon">group</span>
+          <span>Danh Sách Nhân Sự</span>
+          <span class="nav-badge" id="navEmpCount">12</span>
+        </a>
+
+        <a href="/search" class="nav-item" data-page="search">
+          <span class="material-symbols-outlined nav-icon">search_insights</span>
+          <span>Tra Cứu Hồ Sơ</span>
+        </a>
+
+        <a href="/documents" class="nav-item" data-page="documents">
+          <span class="material-symbols-outlined nav-icon">folder_shared</span>
+          <span>Kho Tài Liệu Số</span>
+          <span class="nav-badge nav-badge-danger" id="navMissingDocBadge">3 Thiếu</span>
+        </a>
+
+        <span class="nav-section-title">Cơ Cấu Tổ Chức</span>
+
+        <a href="/projects" class="nav-item" data-page="projects">
+          <span class="material-symbols-outlined nav-icon">sports_esports</span>
+          <span>Dự Án Game &amp; Team</span>
+        </a>
+
+        <a href="/settings" class="nav-item" data-page="settings">
+          <span class="material-symbols-outlined nav-icon">tune</span>
+          <span>Sao Lưu &amp; Cài Đặt</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="system-status-card">
+          <div class="status-dot"></div>
+          <div class="status-info">
+            <span class="status-name">JoyGames HR Online</span>
+            <span class="status-desc">Dữ liệu mã hóa an toàn</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- Top Navbar -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="mobile-toggle-btn" id="mobileMenuBtn" aria-label="Mở menu">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <div class="global-search-box">
+            <span class="material-symbols-outlined global-search-icon">search</span>
+            <input type="text" class="global-search-input" id="globalSearchInput" placeholder="Tìm nhanh nhân viên theo tên, mã JG, SĐT, CCCD...">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="header-btn btn-icon-only" id="themeToggleBtn" title="Chuyển đổi giao diện Sáng / Tối">
+            <span class="material-symbols-outlined" id="themeIcon">light_mode</span>
+          </button>
+
+          <button class="header-btn btn-secondary" onclick="HRStorage.exportToCSV()" title="Xuất danh sách ra file Excel / CSV">
+            <span class="material-symbols-outlined">download</span>
+            <span class="btn-label">Xuất Excel</span>
+          </button>
+
+          <button class="header-btn btn-primary" onclick="JoyApp.openAddEmployeeModal()">
+            <span class="material-symbols-outlined">person_add</span>
+            <span class="btn-label">Thêm Nhân Sự</span>
+          </button>
+
+          <!-- User Session & Logout -->
+          <div class="user-profile-btn" id="headerUserProfile" title="Tài khoản HR đang đăng nhập">
+            <div class="user-avatar-small" id="headerUserAvatar">HR</div>
+            <span class="user-name-small" id="headerUserEmail">hr@joygames.vn</span>
+          </div>
+
+          <button class="btn-logout" id="btnLogout" onclick="JoyApp.logout()" title="Đăng xuất khỏi cổng HR JoyGames">
+            <span class="material-symbols-outlined" style="font-size: 16px;">logout</span>
+            <span>Đăng Xuất</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- App Views Body -->
+      <div class="app-content">
+
+        <!-- ==================== VIEW 1: DASHBOARD ==================== -->
+        <section class="page-view active" id="view-dashboard">
+          <!-- Top Title Bar -->
+          <div class="dash-top-bar">
+            <div class="dash-top-title">
+              <span class="material-symbols-outlined" style="color: var(--joy-primary); font-size: 28px;">bar_chart</span>
+              <span>Tổng Quan</span>
+            </div>
+            <div style="margin-left: auto; display: flex; gap: 8px;">
+              <button class="btn btn-secondary btn-sm" onclick="JoyApp.resetDashboardFilters()">
+                <span class="material-symbols-outlined">restart_alt</span> Đặt Lại Lọc
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="JoyApp.renderDashboard()">
+                <span class="material-symbols-outlined">refresh</span> Làm Mới
+              </button>
+            </div>
+          </div>
+
+          <!-- Top Filter Bar (4 Filter Cards exactly matching company reference) -->
+          <div class="dash-filter-grid">
+            <!-- Filter 1: Công ty -->
+            <div class="dash-filter-card">
+              <div class="dash-filter-label">
+                <span>Công ty</span>
+                <span class="material-symbols-outlined" style="font-size: 14px;">domain</span>
+              </div>
+              <div class="dash-filter-select-wrap">
+                <select class="dash-filter-select" id="dashFilterCompany" onchange="JoyApp.handleDashboardFilterChange()">
+                  <option value="">Tất cả</option>
+                  <option value="JoyGames Studio (Hà Nội)">JoyGames Studio (Hà Nội)</option>
+                  <option value="JoyPlay Mobile (TP.HCM)">JoyPlay Mobile (TP.HCM)</option>
+                  <option value="JoyTech Labs">JoyTech Labs</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Filter 2: Phòng ban -->
+            <div class="dash-filter-card">
+              <div class="dash-filter-label">
+                <span>Phòng ban</span>
+                <span class="material-symbols-outlined" style="font-size: 14px;">groups</span>
+              </div>
+              <div class="dash-filter-select-wrap">
+                <select class="dash-filter-select" id="dashFilterDept" onchange="JoyApp.handleDashboardFilterChange()">
+                  <option value="">Tất cả</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Filter 3: Vị trí -->
+            <div class="dash-filter-card">
+              <div class="dash-filter-label">
+                <span>Vị trí</span>
+                <span class="material-symbols-outlined" style="font-size: 14px;">badge</span>
+              </div>
+              <div class="dash-filter-select-wrap">
+                <select class="dash-filter-select" id="dashFilterPosition" onchange="JoyApp.handleDashboardFilterChange()">
+                  <option value="">Tất cả</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Filter 4: Trạng thái (với đèn tròn xanh) -->
+            <div class="dash-filter-card">
+              <div class="dash-filter-label">
+                <span>Trạng thái</span>
+                <span class="material-symbols-outlined" style="font-size: 14px;">toggle_on</span>
+              </div>
+              <div class="dash-filter-select-wrap">
+                <span class="status-dot-indicator" id="dashStatusDot"></span>
+                <select class="dash-filter-select" id="dashFilterStatus" onchange="JoyApp.handleDashboardFilterChange()">
+                  <option value="active" selected>Đang làm</option>
+                  <option value="all">Tất cả</option>
+                  <option value="Thử việc">Thử việc</option>
+                  <option value="Đã nghỉ việc">Đã nghỉ việc</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 Statistical Visual Charts Suite (2 rows of 3 columns) -->
+          <div class="dash-charts-grid">
+            <!-- Chart 1: Loại công việc (Horizontal Bar - Mint Green) -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Loại công việc</h3>
+              </div>
+              <div class="chart-card-body" id="chartWorkType">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Chart 2: Số nhân viên theo từng phòng ban (Horizontal Bar - Soft Pink) -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Số nhân viên theo từng phòng ban</h3>
+              </div>
+              <div class="chart-card-body" id="chartDeptBreakdown">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Chart 3: Chức vụ (Horizontal Bar - Soft Lavender Purple) -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Chức vụ</h3>
+              </div>
+              <div class="chart-card-body" id="chartPositionBreakdown">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Chart 4: Học vấn (Vertical Column Chart with numbers on top) -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Học vấn</h3>
+              </div>
+              <div class="chart-card-body" id="chartEducationBreakdown">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Chart 5: Nhóm độ tuổi (Donut Chart with Percentages) -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Nhóm độ tuổi</h3>
+              </div>
+              <div class="chart-card-body" id="chartAgeGroups">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Chart 6: Tình trạng hôn nhân (Donut Chart with Percentages) -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3 class="chart-card-title">Tình trạng hôn nhân</h3>
+              </div>
+              <div class="chart-card-body" id="chartMaritalBreakdown">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: Action Alerts & Game Projects Overview -->
+          <div class="analytics-grid" style="margin-top: 10px;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <span class="material-symbols-outlined" style="color: var(--joy-accent-red)">notification_important</span>
+                  Cảnh Báo Hồ Sơ Cần Xử Lý
+                </h3>
+              </div>
+              <div class="action-items-list" id="dashboardAlertsList"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <span class="material-symbols-outlined" style="color: var(--joy-accent-cyan)">sports_esports</span>
+                  Dự Án Game Trọng Điểm
+                </h3>
+                <a href="/projects" class="btn btn-outline btn-sm">Xem chi tiết</a>
+              </div>
+              <div class="stat-grid" id="projectStatCards" style="margin-bottom: 0;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 2: EMPLOYEES DIRECTORY ==================== -->
+        <section class="page-view" id="view-employees">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <h2 class="section-title">Danh Sách Hồ Sơ Nhân Sự</h2>
+              <p class="section-desc">Quản lý toàn bộ thông tin nhân viên, hợp đồng và tình trạng lưu trữ tài liệu</p>
+            </div>
+            <div class="action-buttons-wrap">
+              <button class="btn btn-primary" onclick="JoyApp.openAddEmployeeModal()">
+                <span class="material-symbols-outlined">add</span> Thêm Nhân Viên Mới
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter Toolbar -->
+          <div class="filter-toolbar">
+            <div class="filter-row-top">
+              <div class="search-field-wrap">
+                <span class="material-symbols-outlined search-field-icon">search</span>
+                <input type="text" class="search-field-input" id="filterKeyword" placeholder="Tìm theo tên, mã NV, email, SĐT, CCCD...">
+              </div>
+
+              <select class="filter-select" id="filterDept">
+                <option value="">Tất cả Phòng Ban</option>
+              </select>
+
+              <select class="filter-select" id="filterProject">
+                <option value="">Tất cả Dự Án Game</option>
+              </select>
+
+              <select class="filter-select" id="filterStatus">
+                <option value="">Tất cả Trạng Thái</option>
+                <option value="Đang làm việc">Đang làm việc</option>
+                <option value="Thử việc">Thử việc</option>
+                <option value="Nghỉ chế độ">Nghỉ chế độ</option>
+                <option value="Đã nghỉ việc">Đã nghỉ việc</option>
+              </select>
+
+              <div class="view-toggle-wrap">
+                <button class="view-toggle-btn active" id="viewModeCardBtn" onclick="JoyApp.setViewMode('card')">
+                  <span class="material-symbols-outlined">grid_view</span> Thẻ
+                </button>
+                <button class="view-toggle-btn" id="viewModeTableBtn" onclick="JoyApp.setViewMode('table')">
+                  <span class="material-symbols-outlined">table_rows</span> Bảng
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Pill Filters -->
+            <div class="filter-pills-row">
+              <span class="filter-pill-label">Lọc nhanh:</span>
+              <button class="filter-pill active" data-pill-type="all" onclick="JoyApp.setPillFilter('all')">Tất cả (<span id="pillCountAll">0</span>)</button>
+              <button class="filter-pill" data-pill-type="complete" onclick="JoyApp.setPillFilter('complete')">✅ Đủ hồ sơ số (<span id="pillCountComplete">0</span>)</button>
+              <button class="filter-pill" data-pill-type="missing" onclick="JoyApp.setPillFilter('missing')">⚠️ Thiếu hồ sơ (<span id="pillCountMissing">0</span>)</button>
+              <button class="filter-pill" data-pill-type="probation" onclick="JoyApp.setPillFilter('probation')">⏳ Thử việc / TTS (<span id="pillCountProbation">0</span>)</button>
+              <button class="filter-pill" data-pill-type="lead" onclick="JoyApp.setPillFilter('lead')">⭐ Cấp Quản lý / Lead (<span id="pillCountLead">0</span>)</button>
+            </div>
+          </div>
+
+          <!-- Employees Render Container -->
+          <div id="employeesContainer">
+            <!-- Dynamic Grid or Table rendered here -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 3: ADVANCED SEARCH ==================== -->
+        <section class="page-view" id="view-search">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <h2 class="section-title">Tra Cứu Hồ Sơ Chuyên Sâu</h2>
+              <p class="section-desc">Tìm kiếm chính xác và lọc nâng cao đa tiêu chí hồ sơ cán bộ nhân viên</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 24px;">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Mã Nhân Viên JoyGames</label>
+                <input type="text" class="form-control" id="advSearchId" placeholder="Ví dụ: JG-0001, JG-0002...">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Họ và Tên Nhân Viên</label>
+                <input type="text" class="form-control" id="advSearchName" placeholder="Nhập tên nhân viên...">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Số Căn Cước Công Dân (CCCD)</label>
+                <input type="text" class="form-control" id="advSearchIdCard" placeholder="Tìm theo 12 số CCCD...">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Số Điện Thoại / Email</label>
+                <input type="text" class="form-control" id="advSearchContact" placeholder="09xx hoặc @joygames.vn...">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phòng Ban Công Tác</label>
+                <select class="form-control" id="advSearchDept">
+                  <option value="">-- Tất cả Phòng Ban --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Dự Án Game Tham Gia</label>
+                <select class="form-control" id="advSearchProject">
+                  <option value="">-- Tất cả Dự Án --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Loại Hợp Đồng Lao Động</label>
+                <select class="form-control" id="advSearchContract">
+                  <option value="">-- Tất cả Loại Hợp Đồng --</option>
+                  <option value="Không thời hạn">Chính thức (Không thời hạn)</option>
+                  <option value="1 - 3 năm">Chính thức (1 - 3 năm)</option>
+                  <option value="Thử việc">Thử việc</option>
+                  <option value="Thực tập sinh">Thực tập sinh</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tình Trạng Lưu Trữ Giấy Tờ</label>
+                <select class="form-control" id="advSearchDocStatus">
+                  <option value="">-- Tất cả --</option>
+                  <option value="complete">Đã nộp đủ toàn bộ hồ sơ (100%)</option>
+                  <option value="missing">Còn thiếu giấy tờ bắt buộc (&lt; 100%)</option>
+                  <option value="missing_cccd">Còn thiếu CCCD mặt trước/sau</option>
+                  <option value="missing_contract">Còn thiếu Hợp đồng lao động scan</option>
+                  <option value="missing_health">Còn thiếu Giấy khám sức khỏe</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-subtle);">
+              <button class="btn btn-secondary" onclick="JoyApp.resetAdvSearch()">
+                <span class="material-symbols-outlined">restart_alt</span> Xóa bộ lọc
+              </button>
+              <button class="btn btn-primary" onclick="JoyApp.performAdvSearch()">
+                <span class="material-symbols-outlined">search</span> Bắt Đầu Tra Cứu
+              </button>
+            </div>
+          </div>
+
+          <!-- Advanced Search Results Box -->
+          <div id="advSearchResultsWrap">
+            <!-- Results injected here -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 4: DOCUMENT VAULT AUDIT ==================== -->
+        <section class="page-view" id="view-documents">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <h2 class="section-title">Kho Lưu Trữ &amp; Kiểm Định Hồ Sơ Số</h2>
+              <p class="section-desc">Theo dõi tính hợp lệ, đầy đủ của hồ sơ nhân sự theo quy định lao động và bảo mật game</p>
+            </div>
+            <div class="action-buttons-wrap">
+              <button class="btn btn-secondary" onclick="JoyApp.remindAllMissingDocs()">
+                <span class="material-symbols-outlined">mail</span> Nhắc Nhở Bổ Sung Hồ Sơ
+              </button>
+            </div>
+          </div>
+
+          <!-- Document Audit Stats Grid -->
+          <div class="stat-grid" id="docAuditStats">
+            <!-- Dynamic stats for documents -->
+          </div>
+
+          <!-- Missing Docs Table -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <span class="material-symbols-outlined" style="color: var(--joy-accent-red)">warning</span>
+                Danh Sách Nhân Sự Còn Thiếu Tài Liệu Bắt Buộc
+              </h3>
+              <span class="badge badge-danger" id="missingDocBadgeCount">0 Nhân viên</span>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Mã NV &amp; Họ Tên</th>
+                    <th>Phòng Ban</th>
+                    <th>Chức Vụ</th>
+                    <th>Tiến Độ Hồ Sơ</th>
+                    <th>Tài Liệu Còn Thiếu</th>
+                    <th>Thao Tác</th>
+                  </tr>
+                </thead>
+                <tbody id="missingDocsTableBody">
+                  <!-- Dynamic Render -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 5: GAME PROJECTS & TEAMS ==================== -->
+        <section class="page-view" id="view-projects">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <h2 class="section-title">Cơ Cấu Dự Án Game JoyGames</h2>
+              <p class="section-desc">Danh sách các studio game trực thuộc, tựa game phát hành và quản lý xoay tua nhân sự</p>
+            </div>
+            <div class="action-buttons-wrap" style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="btn btn-secondary" onclick="JoyApp.openAddProjectModal()">
+                <span class="material-symbols-outlined">add_box</span> Thêm Dự Án Game Mới
+              </button>
+              <button class="btn btn-primary" onclick="JoyApp.openRotateModal()">
+                <span class="material-symbols-outlined">sync_alt</span> Xoay Tua / Điều Chuyển Nhân Sự
+              </button>
+            </div>
+          </div>
+
+          <div class="employee-card-grid" id="projectTeamsGrid">
+            <!-- Render project cards -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 6: SETTINGS & BACKUP ==================== -->
+        <section class="page-view" id="view-settings">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <h2 class="section-title">Sao Lưu &amp; Cài Đặt Hệ Thống</h2>
+              <p class="section-desc">Xuất dữ liệu an toàn, chuyển đổi máy chủ, phục hồi dữ liệu gốc mẫu</p>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 24px; max-width: 800px;">
+            <!-- TELEGRAM 2FA SECURITY CARD -->
+            <div class="card" style="border-left: 4px solid #0284c7;">
+              <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                  <h3 class="card-title" style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-symbols-outlined" style="color: #0284c7;">verified_user</span>
+                    Bảo Mật Xác Thực 2 Lớp (2FA) Qua Telegram OTP
+                  </h3>
+                  <span class="badge" id="telegramStatusBadge" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
+                    <span class="material-symbols-outlined" style="font-size: 13px; vertical-align: middle;">check_circle</span> Đang Kích Hoạt
+                  </span>
+                </div>
+              </div>
+
+              <p style="color: var(--text-secondary); margin-bottom: 18px; font-size: 13.5px; line-height: 1.6;">
+                Mỗi khi đăng nhập vào hệ thống quản lý nhân sự JoyGames, mã xác thực OTP 6 số sẽ được gửi trực tiếp tới tài khoản <strong>Telegram</strong> của bạn để ngăn chặn tuyệt đối truy cập trái phép vào hồ sơ bảo mật.
+              </p>
+
+              <form id="telegramSettingsForm" onsubmit="JoyApp.saveTelegramConfig(event)">
+                <div class="form-grid" style="grid-template-columns: 1fr; gap: 14px; margin-bottom: 18px;">
+                  <div class="form-group">
+                    <label class="form-label" style="display: flex; justify-content: space-between;">
+                      <span>Telegram Bot Token <span class="req">*</span></span>
+                      <a href="https://t.me/BotFather" target="_blank" style="font-size: 12px; color: #0284c7; font-weight: 600; text-decoration: none;">
+                        Lấy từ @BotFather ↗
+                      </a>
+                    </label>
+                    <input type="password" class="form-control" id="cfgTelegramBotToken" placeholder="Ví dụ: 7891234567:AAFnB9..." style="font-family: monospace;" />
+                    <span style="font-size: 12px; color: var(--text-muted); margin-top: 5px; display: block;">
+                      Tạo bot miễn phí bằng cách chat <code style="background: var(--bg-surface-alt); padding: 2px 6px; border-radius: 4px; color: var(--joy-primary); font-weight: 600; border: 1px solid var(--border-subtle);">/newbot</code> với @BotFather trên Telegram.
+                    </span>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" style="display: flex; justify-content: space-between;">
+                      <span>Telegram Chat ID / User ID Người Nhận OTP <span class="req">*</span></span>
+                      <a href="https://t.me/userinfobot" target="_blank" style="font-size: 12px; color: #0284c7; font-weight: 600; text-decoration: none;">
+                        Lấy từ @userinfobot ↗
+                      </a>
+                    </label>
+                    <input type="text" class="form-control" id="cfgTelegramChatId" placeholder="Ví dụ: 987654321 hoặc -100xxxx (ID nhóm)" style="font-family: monospace;" />
+                    <span style="font-size: 12px; color: var(--text-muted); margin-top: 5px; display: block;">
+                      Chat bất kỳ tin nhắn nào tới @userinfobot trên Telegram để lấy số ID cá nhân của bạn. Nhớ ấn <strong>Start</strong> bot của bạn trước!
+                    </span>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                  <button type="submit" class="btn btn-primary">
+                    <span class="material-symbols-outlined">save</span> Lưu Cấu Hình Telegram
+                  </button>
+                  <button type="button" class="btn btn-secondary" onclick="JoyApp.testTelegramBot()">
+                    <span class="material-symbols-outlined">send</span> Gửi Tin Nhắn Kiểm Tra
+                  </button>
+                  <span id="telegramTestResult" style="font-size: 12.5px; margin-left: 8px;"></span>
+                </div>
+              </form>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <span class="material-symbols-outlined" style="color: var(--joy-primary)">cloud_download</span>
+                  Xuất Sao Lưu Dữ Liệu (Backup JSON)
+                </h3>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px;">
+                Tải về toàn bộ hồ sơ nhân viên JoyGames, danh mục tài liệu số và lịch sử công tác dưới dạng file JSON. Có thể dùng để lưu trữ định kỳ hoặc chuyển sang thiết bị khác.
+              </p>
+              <button class="btn btn-primary" onclick="HRStorage.exportBackupJSON()">
+                <span class="material-symbols-outlined">download</span> Tải File Sao Lưu (.JSON)
+              </button>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <span class="material-symbols-outlined" style="color: var(--joy-accent-yellow)">cloud_upload</span>
+                  Khôi Phục Dữ Liệu Từ File Sao Lưu
+                </h3>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px;">
+                Nhập file JSON đã sao lưu trước đó để khôi phục toàn bộ hệ thống.
+              </p>
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <input type="file" id="importJsonFileInput" accept=".json" style="display: none;" onchange="JoyApp.handleImportFile(event)">
+                <button class="btn btn-secondary" onclick="document.getElementById('importJsonFileInput').click()">
+                  <span class="material-symbols-outlined">folder_open</span> Chọn File Backup .JSON
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <span class="material-symbols-outlined" style="color: var(--joy-accent-red)">restart_alt</span>
+                  Khôi Phục Dữ Liệu Mẫu JoyGames
+                </h3>
+              </div>
+              <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px;">
+                Đặt lại toàn bộ hệ thống về danh sách 12 nhân sự mẫu tiêu biểu của JoyGames (Studio Haki, Pixel, B21 ARPG...). Thao tác này sẽ ghi đè dữ liệu hiện có.
+              </p>
+              <button class="btn btn-danger" onclick="JoyApp.resetDemoData()">
+                <span class="material-symbols-outlined">restore</span> Khôi Phục Dữ Liệu Mẫu Ban Đầu
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODAL: EMPLOYEE 360 DETAIL ==================== -->
+  <div class="modal-overlay" id="modalEmpDetail">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span class="material-symbols-outlined" style="color: var(--joy-primary)">badge</span>
+          Hồ Sơ Nhân Sự Chi Tiết 360°
+        </h3>
+        <button class="modal-close-btn" onclick="JoyApp.closeModal('modalEmpDetail')">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body" id="empDetailBody">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="JoyApp.printEmployeeProfile()">
+          <span class="material-symbols-outlined">print</span> In Hồ Sơ A4
+        </button>
+        <button class="btn btn-secondary" id="btnDetailEdit">
+          <span class="material-symbols-outlined">edit</span> Chỉnh Sửa
+        </button>
+        <button class="btn btn-danger" id="btnDetailDelete">
+          <span class="material-symbols-outlined">delete</span> Xóa Hồ Sơ
+        </button>
+        <button class="btn btn-primary" onclick="JoyApp.closeModal('modalEmpDetail')">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADD / EDIT EMPLOYEE ==================== -->
+  <div class="modal-overlay" id="modalEmpForm">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="formModalTitle">
+          <span class="material-symbols-outlined" style="color: var(--joy-primary)">person_add</span>
+          Thêm Mới Hồ Sơ Nhân Sự JoyGames
+        </h3>
+        <button class="modal-close-btn" onclick="JoyApp.closeModal('modalEmpForm')">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form id="employeeForm" onsubmit="JoyApp.handleFormSubmit(event)">
+          <input type="hidden" id="formEmpId">
+
+          <!-- Section 1: Thông tin cơ bản -->
+          <h4 style="font-size: 15px; font-weight: 700; color: var(--joy-primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+            <span class="material-symbols-outlined">person</span> 1. Thông Tin Cá Nhân
+          </h4>
+          <div class="form-grid" style="margin-bottom: 24px;">
+            <div class="form-group">
+              <label class="form-label">Họ và Tên <span class="req">*</span></label>
+              <input type="text" class="form-control" id="formFullName" required placeholder="Ví dụ: Nguyễn Văn A">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mã Nhân Viên</label>
+              <input type="text" class="form-control" id="formDisplayId" readonly style="background: var(--bg-surface); opacity: 0.8; font-weight: 700; color: var(--joy-primary);">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Giới Tính <span class="req">*</span></label>
+              <select class="form-control" id="formGender" required>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày Sinh (dd/mm/yyyy) <span class="req">*</span></label>
+              <div class="date-input-wrap">
+                <input type="text" class="form-control date-mask" id="formBirthDate" required placeholder="dd/mm/yyyy" maxlength="10">
+                <button type="button" class="date-picker-btn" onclick="JoyApp.openCalendarFor('formBirthDate')" title="Chọn từ lịch">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                </button>
+                <input type="date" class="hidden-date-picker" id="picker_formBirthDate" onchange="JoyApp.syncPickerToText('formBirthDate', this.value)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số Điện Thoại <span class="req">*</span></label>
+              <input type="tel" class="form-control" id="formPhone" required placeholder="09xx xxx xxx">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email JoyGames (@joygames.vn) <span class="req">*</span></label>
+              <input type="email" class="form-control" id="formWorkEmail" required placeholder="tên.ho@joygames.vn">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số CCCD (12 chữ số) <span class="req">*</span></label>
+              <input type="text" class="form-control" id="formIdCard" required maxlength="12" placeholder="001xxxxxxxxx">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày Cấp &amp; Nơi Cấp CCCD</label>
+              <div style="display: flex; gap: 8px;">
+                <div class="date-input-wrap" style="flex: 1;">
+                  <input type="text" class="form-control date-mask" id="formIdCardDate" placeholder="dd/mm/yyyy" maxlength="10">
+                  <button type="button" class="date-picker-btn" onclick="JoyApp.openCalendarFor('formIdCardDate')" title="Chọn từ lịch">
+                    <span class="material-symbols-outlined">calendar_today</span>
+                  </button>
+                  <input type="date" class="hidden-date-picker" id="picker_formIdCardDate" onchange="JoyApp.syncPickerToText('formIdCardDate', this.value)">
+                </div>
+                <input type="text" class="form-control" id="formIdCardPlace" style="flex: 1;" placeholder="Cục CSQLHC về TTXH" value="Cục Cảnh sát QLHC về TTXH">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Quê Quán</label>
+              <input type="text" class="form-control" id="formHometown" placeholder="Hà Nội, Nam Định, Hải Phòng...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Địa Chỉ Thường Trú / Tạm Trú</label>
+              <input type="text" class="form-control" id="formAddress" placeholder="Số nhà, đường, quận/huyện...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Trình Độ Học Vấn</label>
+              <select class="form-control" id="formEducation">
+                <option value="Đại học" selected>Đại học</option>
+                <option value="Cao đẳng">Cao đẳng</option>
+                <option value="Trung cấp">Trung cấp</option>
+                <option value="Trung học phổ thông">Trung học phổ thông</option>
+                <option value="Sau đại học">Sau đại học</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tình Trạng Hôn Nhân</label>
+              <select class="form-control" id="formMaritalStatus">
+                <option value="Độc thân" selected>Độc thân</option>
+                <option value="Đã có gia đình">Đã có gia đình</option>
+              </select>
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label">Link Ảnh Đại Diện (Avatar)</label>
+              <input type="url" class="form-control" id="formAvatar" placeholder="https://images.unsplash.com/... hoặc để trống lấy ảnh mặc định">
+            </div>
+          </div>
+
+          <!-- Section 2: Công việc tại JoyGames -->
+          <h4 style="font-size: 15px; font-weight: 700; color: var(--joy-primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+            <span class="material-symbols-outlined">work</span> 2. Vị Trí &amp; Dự Án Game Tại JoyGames
+          </h4>
+          <div class="form-grid" style="margin-bottom: 24px;">
+            <div class="form-group">
+              <label class="form-label">Công Ty / Pháp Nhân <span class="req">*</span></label>
+              <select class="form-control" id="formCompany" required>
+                <option value="JoyGames Studio (Hà Nội)" selected>JoyGames Studio (Hà Nội)</option>
+                <option value="JoyPlay Mobile (TP.HCM)">JoyPlay Mobile (TP.HCM)</option>
+                <option value="JoyTech Labs">JoyTech Labs</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Loại Công Việc <span class="req">*</span></label>
+              <select class="form-control" id="formWorkType" required>
+                <option value="Full Time" selected>Full Time (Toàn thời gian)</option>
+                <option value="Part Time">Part Time (Bán thời gian)</option>
+                <option value="Remote">Remote (Làm việc từ xa)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phòng Ban <span class="req">*</span></label>
+              <select class="form-control" id="formDepartment" required>
+                <!-- Populated by JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Chức Danh / Vị Trí <span class="req">*</span></label>
+              <input type="text" class="form-control" id="formPosition" required placeholder="Ví dụ: Lead Unity Dev, Game Designer, 3D Artist...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cấp Bậc (Seniority)</label>
+              <select class="form-control" id="formLevel">
+                <option value="Intern">Intern (Thực tập sinh)</option>
+                <option value="Junior">Junior</option>
+                <option value="Middle" selected>Middle</option>
+                <option value="Senior">Senior</option>
+                <option value="Lead">Lead (Trưởng nhóm)</option>
+                <option value="Director">Director (Giám đốc bộ phận)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dự Án Game Phụ Trách <span class="req">*</span></label>
+              <select class="form-control" id="formGameProject" required>
+                <!-- Populated by JS -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Người Quản Lý Trực Tiếp</label>
+              <input type="text" class="form-control" id="formManager" placeholder="Ví dụ: Vũ Đức Nam, Đặng Quốc Huy...">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày Gia Nhập JoyGames (dd/mm/yyyy) <span class="req">*</span></label>
+              <div class="date-input-wrap">
+                <input type="text" class="form-control date-mask" id="formJoinDate" required placeholder="dd/mm/yyyy" maxlength="10">
+                <button type="button" class="date-picker-btn" onclick="JoyApp.openCalendarFor('formJoinDate')" title="Chọn từ lịch">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                </button>
+                <input type="date" class="hidden-date-picker" id="picker_formJoinDate" onchange="JoyApp.syncPickerToText('formJoinDate', this.value)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Trạng Thái Làm Việc</label>
+              <select class="form-control" id="formStatus">
+                <option value="Thử việc" selected>Thử việc</option>
+                <option value="Đang làm việc">Đang làm việc</option>
+                <option value="Nghỉ chế độ">Nghỉ chế độ (Thai sản, Ốm đau)</option>
+                <option value="Đã nghỉ việc">Đã nghỉ việc</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section 3: Hợp đồng & Chế độ -->
+          <h4 style="font-size: 15px; font-weight: 700; color: var(--joy-primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+            <span class="material-symbols-outlined">payments</span> 3. Hợp Đồng Lao Động &amp; Chế Độ
+          </h4>
+          <div class="form-grid" style="margin-bottom: 24px;">
+            <div class="form-group">
+              <label class="form-label">Loại Hợp Đồng</label>
+              <select class="form-control" id="formContractType">
+                <option value="Thử việc" selected>Thử việc</option>
+                <option value="Chính thức (Không thời hạn)">Chính thức (Không thời hạn)</option>
+                <option value="Chính thức (1 - 3 năm)">Chính thức (1 - 3 năm)</option>
+                <option value="Thực tập sinh">Thực tập sinh</option>
+                <option value="Cộng tác viên">Cộng tác viên</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số Hợp Đồng</label>
+              <input type="text" class="form-control" id="formContractNumber" placeholder="HĐTV-JG/2024/001">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày Bắt Đầu HĐ (dd/mm/yyyy)</label>
+              <div class="date-input-wrap">
+                <input type="text" class="form-control date-mask" id="formContractStart" placeholder="dd/mm/yyyy" maxlength="10">
+                <button type="button" class="date-picker-btn" onclick="JoyApp.openCalendarFor('formContractStart')" title="Chọn từ lịch">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                </button>
+                <input type="date" class="hidden-date-picker" id="picker_formContractStart" onchange="JoyApp.syncPickerToText('formContractStart', this.value)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ngày Hết Hạn HĐ (để trống nếu vô thời hạn)</label>
+              <div class="date-input-wrap">
+                <input type="text" class="form-control date-mask" id="formContractEnd" placeholder="dd/mm/yyyy" maxlength="10">
+                <button type="button" class="date-picker-btn" onclick="JoyApp.openCalendarFor('formContractEnd')" title="Chọn từ lịch">
+                  <span class="material-symbols-outlined">calendar_today</span>
+                </button>
+                <input type="date" class="hidden-date-picker" id="picker_formContractEnd" onchange="JoyApp.syncPickerToText('formContractEnd', this.value)">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mức Lương Cơ Bản (VNĐ)</label>
+              <input type="text" class="form-control" id="formBaseSalary" placeholder="25.000.000 đ">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tài Khoản Ngân Hàng</label>
+              <input type="text" class="form-control" id="formBankAccount" placeholder="STK - Tên Ngân Hàng - Chi Nhánh">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mã Số Thuế Cá Nhân</label>
+              <input type="text" class="form-control" id="formTaxId" placeholder="8xxxxxxxxx">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mã Số BHXH</label>
+              <input type="text" class="form-control" id="formInsuranceId" placeholder="01xxxxxxxx">
+            </div>
+            <div class="form-group col-span-2">
+              <label class="form-label">Ghi Chú Nhân Sự</label>
+              <textarea class="form-control" id="formNotes" rows="2" placeholder="Ghi chú kinh nghiệm, sở trường, dự án nổi bật..."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="padding-left: 0; padding-right: 0;">
+            <button type="button" class="btn btn-secondary" onclick="JoyApp.closeModal('modalEmpForm')">
+              <span class="material-symbols-outlined">close</span> Hủy Bỏ
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span class="material-symbols-outlined">save</span> Lưu Hồ Sơ
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADD DOCUMENT UPLOAD ==================== -->
+  <div class="modal-overlay" id="modalUploadDoc">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span class="material-symbols-outlined" style="color: var(--joy-primary)">upload_file</span>
+          Tải Lên Tệp Tài Liệu Số
+        </h3>
+        <button class="modal-close-btn" onclick="JoyApp.closeModal('modalUploadDoc')">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="uploadDocForm" onsubmit="JoyApp.handleDocUpload(event)">
+          <input type="hidden" id="uploadDocEmpId">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Loại Tài Liệu <span class="req">*</span></label>
+            <select class="form-control" id="uploadDocType" required>
+              <!-- Filled from DOCUMENT_TYPES -->
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Tên File / Tiêu Đề Tài Liệu <span class="req">*</span></label>
+            <input type="text" class="form-control" id="uploadDocName" required placeholder="Ví dụ: CCCD_NguyenVanA_MatTruoc.jpg">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Định Dạng Tệp</label>
+            <select class="form-control" id="uploadDocFormat">
+              <option value="JPG">Hình ảnh (JPG / PNG)</option>
+              <option value="PDF">Tài liệu số hóa (PDF)</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Chọn File Từ Thiết Bị (Demo)</label>
+            <input type="file" class="form-control" id="uploadDocFileInput" accept="image/*,application/pdf" onchange="JoyApp.handleFileSelected(event)">
+          </div>
+          <div class="modal-footer" style="padding-left: 0; padding-right: 0;">
+            <button type="button" class="btn btn-secondary" onclick="JoyApp.closeModal('modalUploadDoc')">
+              <span class="material-symbols-outlined">close</span> Hủy
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span class="material-symbols-outlined">upload_file</span> Lưu Vào Kho
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: DOCUMENT PREVIEW ==================== -->
+  <div class="modal-overlay" id="modalDocPreview">
+    <div class="modal-box" style="max-width: 800px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="previewDocTitle">
+          <span class="material-symbols-outlined" style="color: var(--joy-primary)">visibility</span>
+          Xem Trước Tài Liệu
+        </h3>
+        <button class="modal-close-btn" onclick="JoyApp.closeModal('modalDocPreview')">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center; min-height: 350px; display: flex; align-items: center; justify-content: center;" id="previewDocContainer">
+        <!-- Render preview image or PDF placeholder -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="JoyApp.closeModal('modalDocPreview')">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ROTATE / REALLOCATE PROJECT ==================== -->
+  <div class="modal-overlay" id="modalRotateProject">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span class="material-symbols-outlined" style="color: var(--joy-primary)">sync_alt</span>
+          Xoay Tua &amp; Điều Chuyển Dự Án Game
+        </h3>
+        <button class="modal-close-btn" onclick="JoyApp.closeModal('modalRotateProject')">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+          Đặc thù ngành game đòi hỏi luân chuyển nhân sự giữa các dự án (Pre-production, Sprint, Ra mắt, LiveOps). Mọi thay đổi sẽ tự động được ghi nhận vào <strong>Lịch sử công tác (Milestones)</strong> của nhân viên.
+        </p>
+        <form id="rotateProjectForm" onsubmit="JoyApp.handleRotateSubmit(event)">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">Chọn Nhân Sự Xoay Tua <span class="req">*</span></label>
+            <select class="form-control" id="rotateEmpSelect" required onchange="JoyApp.handleRotateEmpChange(this.value)">
+              <!-- Filled with employees -->
+            </select>
+          </div>
+
+          <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div class="form-group">
+              <label class="form-label">Dự Án Game Hiện Tại</label>
+              <input type="text" class="form-control" id="rotateCurrentProject" readonly style="background: var(--bg-surface-alt); opacity: 0.85;" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dự Án Tiếp Nhận Mới <span class="req">*</span></label>
+              <select class="form-control" id="rotateNewProject" required>
+                <!-- Filled with projects -->
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div class="form-group">
+              <label class="form-label">Hình Thức Xoay Tua <span class="req">*</span></label>
+              <select class="form-control" id="rotateType" required>
+                <option value="Chuyển chính thức (Full-time)">Chuyển chính thức (Full-time)</option>
+                <option value="Chi viện ngắn hạn (Sprint / Crunch)">Chi viện ngắn hạn (Sprint / Crunch)</option>
+                <option value="Tham gia song song (Multi-project)">Tham gia song song (Multi-project)</option>
+                <option value="Bàn giao & luân chuyển">Bàn giao & luân chuyển</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Chức Danh / Vai Trò Tại Dự Án Mới</label>
+              <input type="text" class="form-control" id="rotateNewRole" placeholder="Giữ nguyên hoặc nhập chức danh mới..." />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">Ngày Bắt Đầu Hiệu Lực (dd/mm/yyyy)</label>
+            <div class="date-input-wrap">
+              <input type="text" class="form-control date-mask" id="rotateStartDate" placeholder="dd/mm/yyyy" maxlength="10" />
+              <button type="button" class="date-picker-btn" onclick="JoyApp.openCalendarFor('rotateStartDate')" title="Chọn từ lịch">
+                <span class="material-symbols-outlined">calendar_today</span>
+              </button>
+              <input type="date" class="hidden-date-picker" id="picker_rotateStartDate" onchange="JoyApp.syncPickerToText('rotateStartDate', this.value)" />
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Lý Do Điều Chuyển &amp; Kế Hoạch Bàn Giao <span class="req">*</span></label>
+            <textarea class="form-control" id="rotateReason" rows="3" required placeholder="Ví dụ: Tăng cường Lead Dev cho đợt Closed Beta của Pixel Đại Chiến theo quyết định Studio..."></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding-left: 0; padding-right: 0;">
+            <button type="button" class="btn btn-secondary" onclick="JoyApp.closeModal('modalRotateProject')">
+              <span class="material-symbols-outlined">close</span> Hủy Bỏ
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span class="material-symbols-outlined">check_circle</span> Xác Nhận Điều Chuyển
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADD GAME PROJECT ==================== -->
+  <div class="modal-overlay" id="modalAddProject">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span class="material-symbols-outlined" style="color: var(--joy-primary)">add_box</span>
+          Thêm Dự Án / Tựa Game Mới
+        </h3>
+        <button class="modal-close-btn" onclick="JoyApp.closeModal('modalAddProject')">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="addProjectForm" onsubmit="JoyApp.handleAddProjectSubmit(event)">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+              <span>Mã Dự Án (Project Code) <span class="req">*</span></span>
+              <span style="font-size: 11.5px; color: var(--joy-primary); font-weight: normal;">(Gợi ý tự động hoặc tự đặt)</span>
+            </label>
+            <div style="position: relative;">
+              <input type="text" class="form-control" id="newProjectCode" required placeholder="Ví dụ: TDTK, B21, HKHT..." style="text-transform: uppercase; font-family: monospace; font-weight: 700; letter-spacing: 1px; padding-left: 38px;" />
+              <span class="material-symbols-outlined" style="position: absolute; left: 12px; top: 12px; font-size: 16px; color: var(--text-muted); pointer-events: none;">tag</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label">Tên Dự Án / Tựa Game <span class="req">*</span></label>
+            <input type="text" class="form-control" id="newProjectName" required placeholder="Ví dụ: Tây Du Thần Ký (MMORPG 3D)" oninput="JoyApp.handleProjectNameInput(this.value)" />
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label">Giai Đoạn Dự Án</label>
+            <select class="form-control" id="newProjectPhase">
+              <option value="Production (Sprint)" selected>Production (Sprint / Đang phát triển)</option>
+              <option value="Pre-production">Pre-production (R&D / Lên ý tưởng)</option>
+              <option value="Closed Beta / Test">Closed Beta / Thử nghiệm</option>
+              <option value="LiveOps">LiveOps (Đã phát hành &amp; Vận hành)</option>
+            </select>
+          </div>
+
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+            Dự án mới sẽ được gán mã định danh, hiển thị trong cây cơ cấu dự án, biểu mẫu nhân sự và các bộ lọc tìm kiếm.
+          </p>
+          <div class="modal-footer" style="padding-left: 0; padding-right: 0;">
+            <button type="button" class="btn btn-secondary" onclick="JoyApp.closeModal('modalAddProject')">
+              <span class="material-symbols-outlined">close</span> Hủy
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <span class="material-symbols-outlined">save</span> Tạo Dự Án
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PRINT CONTAINER (HIDDEN UNTIL PRINT) ==================== -->
+  <div class="print-dossier no-print" id="printDossierContainer">
+    <!-- Generated dynamically on print -->
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ==================== TELEGRAM 2FA AUTH GATE OVERLAY ==================== -->
+  <div class="auth-gate-overlay" id="authGateOverlay">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-badge-icon">
+          <span class="material-symbols-outlined" style="font-size: 34px;">shield_lock</span>
+        </div>
+        <h2 class="auth-title">JoyGames HR Portal</h2>
+        <p class="auth-subtitle">Hệ thống bảo mật xác thực 2 lớp (2FA) qua mã OTP gửi đến Telegram</p>
+      </div>
+
+      <!-- STEP 1: REQUEST OTP VIA EMAIL / TELEGRAM -->
+      <div class="auth-step active" id="authStep1">
+        <div class="auth-info-banner">
+          <span class="material-symbols-outlined" style="font-size: 20px; color: #38bdf8; flex-shrink: 0;">lock</span>
+          <div>
+            Khu vực chứa hồ sơ mật nhân sự JoyGames. Vui lòng xác thực tài khoản quản trị để tiếp tục.
+          </div>
+        </div>
+
+        <form id="authRequestOtpForm" onsubmit="JoyApp.handleRequestOtpSubmit(event)">
+          <div class="auth-form-group">
+            <label class="auth-label">Email Quản Trị Viên / Nhân Sự HR</label>
+            <div class="auth-input-wrapper">
+              <span class="material-symbols-outlined auth-input-icon">mail</span>
+              <input type="email" class="auth-input" id="authEmailInput" required value="hr@joygames.vn" placeholder="admin@joygames.vn">
+            </div>
+          </div>
+
+          <button type="submit" class="auth-btn-primary" id="btnSendOtp">
+            <span class="material-symbols-outlined">send</span>
+            <span>Gửi Mã Xác Thực OTP Qua Telegram</span>
+          </button>
+        </form>
+
+        <!-- Quick Bot Token drawer in case user hasn't configured it in settings yet -->
+        <button type="button" class="auth-bot-config-toggle" onclick="JoyApp.toggleAuthBotDrawer()">
+          <span class="material-symbols-outlined" style="font-size: 15px;">settings</span>
+          <span>Thiết lập nhanh Bot Token & Chat ID (nếu chưa cài)</span>
+        </button>
+
+        <div class="auth-bot-config-drawer" id="authBotDrawer">
+          <div style="font-weight: 600; color: #f1f5f9; margin-bottom: 8px;">Cài đặt Telegram Bot nhận mã:</div>
+          <div style="margin-bottom: 8px;">
+            <label style="color: #94a3b8; font-size: 11px;">Bot Token (@BotFather):</label>
+            <input type="password" class="auth-input" id="authQuickBotToken" placeholder="789xxxx:AAFnB9..." style="height: 36px; padding-left: 12px; font-size: 12px; margin-top: 4px;">
+          </div>
+          <div style="margin-bottom: 10px;">
+            <label style="color: #94a3b8; font-size: 11px;">Chat ID (@userinfobot):</label>
+            <input type="text" class="auth-input" id="authQuickChatId" placeholder="Ví dụ: 987654321" style="height: 36px; padding-left: 12px; font-size: 12px; margin-top: 4px;">
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="JoyApp.saveQuickBotConfig()" style="width: 100%; height: 32px; font-size: 12px;">
+            <span class="material-symbols-outlined" style="font-size: 14px;">check</span> Áp Dụng Cho Lần Này
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: ENTER OTP -->
+      <div class="auth-step" id="authStep2">
+        <div class="auth-info-banner" id="authStep2Banner">
+          <span class="material-symbols-outlined" style="font-size: 20px; color: #38bdf8; flex-shrink: 0;">mark_email_read</span>
+          <div>
+            Mã OTP 6 chữ số đã được gửi tới tài khoản Telegram của bạn. Mã có hiệu lực trong 5 phút.
+          </div>
+        </div>
+
+        <form id="authVerifyOtpForm" onsubmit="JoyApp.handleVerifyOtpSubmit(event)">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <label class="auth-label">Nhập mã xác thực 6 chữ số:</label>
+            <div class="otp-inputs-row" id="otpRow">
+              <input type="text" maxlength="1" class="otp-digit" id="otp1" autocomplete="one-time-code" autofocus>
+              <input type="text" maxlength="1" class="otp-digit" id="otp2">
+              <input type="text" maxlength="1" class="otp-digit" id="otp3">
+              <input type="text" maxlength="1" class="otp-digit" id="otp4">
+              <input type="text" maxlength="1" class="otp-digit" id="otp5">
+              <input type="text" maxlength="1" class="otp-digit" id="otp6">
+            </div>
+          </div>
+
+          <button type="submit" class="auth-btn-primary" id="btnVerifyOtp">
+            <span class="material-symbols-outlined">login</span>
+            <span>Xác Thực &amp; Truy Cập Hệ Thống</span>
+          </button>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 14px;">
+            <button type="button" class="auth-btn-secondary" onclick="JoyApp.backToStep1()" style="width: auto; margin-top: 0; padding: 0 14px;">
+              <span class="material-symbols-outlined" style="font-size: 15px;">arrow_back</span> Đổi Email
+            </button>
+            <button type="button" class="auth-btn-secondary" id="btnResendOtp" onclick="JoyApp.handleResendOtp()" style="width: auto; margin-top: 0; padding: 0 14px;">
+              <span class="material-symbols-outlined" style="font-size: 15px;">refresh</span> Gửi Lại Mã
+            </button>
+          </div>
+        </form>
+
+        <!-- Demo helper badge so user is NEVER locked out if Telegram bot isn't active -->
+        <div class="auth-demo-badge" id="authDemoBadge">
+          <span>⚡ Mã khẩn cấp / Test: <code id="demoOtpDisplay">888888</code></span>
+          <button type="button" class="btn btn-sm btn-secondary" onclick="JoyApp.fillDemoOtp()" style="height: 28px; padding: 0 10px; font-size: 11px;">
+            Điền nhanh
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Logic Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

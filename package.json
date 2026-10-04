@@ -1,0 +1,18 @@
+{
+  "name": "hr-joygames-portal",
+  "version": "1.0.0",
+  "description": "JoyGames HR Portal - Hệ Thống Quản Lý Hồ Sơ Nhân Sự Chuẩn Gaming Studio",
+  "main": "server.py",
+  "scripts": {
+    "start": "python server.py 8088",
+    "dev": "python server.py 8088"
+  },
+  "keywords": [
+    "hr",
+    "game-studio",
+    "joygames",
+    "dashboard"
+  ],
+  "author": "JoyGames Studio",
+  "license": "MIT"
+}
