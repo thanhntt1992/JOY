@@ -545,112 +545,174 @@
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 24px; max-width: 800px;">
-            <!-- TELEGRAM 2FA SECURITY CARD -->
-            <div class="card" style="border-left: 4px solid #0284c7;">
-              <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; margin-bottom: 16px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+          <div class="settings-grid">
+            <!-- CỘT 1 (TRÁI): BẢO MẬT & HẠ TẦNG HỆ THỐNG -->
+            <div class="settings-col">
+              <!-- TELEGRAM 2FA SECURITY CARD -->
+              <div class="card" style="border-left: 4px solid #0284c7;">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <h3 class="card-title" style="display: flex; align-items: center; gap: 10px;">
+                      <span class="material-symbols-outlined" style="color: #0284c7;">verified_user</span>
+                      Bảo Mật Xác Thực 2 Lớp (2FA) Qua Telegram OTP
+                    </h3>
+                    <span class="badge" id="telegramStatusBadge" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
+                      <span class="material-symbols-outlined" style="font-size: 13px; vertical-align: middle;">check_circle</span> Đang Kích Hoạt
+                    </span>
+                  </div>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-bottom: 18px; font-size: 13.5px; line-height: 1.6;">
+                  Mỗi khi đăng nhập vào hệ thống quản lý nhân sự JoyGames, mã xác thực OTP 6 số sẽ được gửi trực tiếp tới tài khoản <strong>Telegram</strong> của bạn để ngăn chặn tuyệt đối truy cập trái phép vào hồ sơ bảo mật.
+                </p>
+
+                <form id="telegramSettingsForm" onsubmit="JoyApp.saveTelegramConfig(event)">
+                  <div class="form-grid" style="grid-template-columns: 1fr; gap: 14px; margin-bottom: 18px;">
+                    <div class="form-group">
+                      <label class="form-label" style="display: flex; justify-content: space-between;">
+                        <span>Telegram Bot Token <span class="req">*</span></span>
+                        <a href="https://t.me/BotFather" target="_blank" style="font-size: 12px; color: #0284c7; font-weight: 600; text-decoration: none;">
+                          Lấy từ @BotFather ↗
+                        </a>
+                      </label>
+                      <input type="password" class="form-control" id="cfgTelegramBotToken" placeholder="Ví dụ: 7891234567:AAFnB9..." style="font-family: monospace;" />
+                      <span style="font-size: 12px; color: var(--text-muted); margin-top: 5px; display: block;">
+                        Tạo bot miễn phí bằng cách chat <code style="background: var(--bg-surface-alt); padding: 2px 6px; border-radius: 4px; color: var(--joy-primary); font-weight: 600; border: 1px solid var(--border-subtle);">/newbot</code> với @BotFather trên Telegram.
+                      </span>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label" style="display: flex; justify-content: space-between;">
+                        <span>Telegram Chat ID / User ID Người Nhận OTP <span class="req">*</span></span>
+                        <a href="https://t.me/userinfobot" target="_blank" style="font-size: 12px; color: #0284c7; font-weight: 600; text-decoration: none;">
+                          Lấy từ @userinfobot ↗
+                        </a>
+                      </label>
+                      <input type="text" class="form-control" id="cfgTelegramChatId" placeholder="Ví dụ: 987654321 hoặc -100xxxx (ID nhóm)" style="font-family: monospace;" />
+                      <span style="font-size: 12px; color: var(--text-muted); margin-top: 5px; display: block;">
+                        Chat bất kỳ tin nhắn nào tới @userinfobot trên Telegram để lấy số ID cá nhân của bạn. Nhớ ấn <strong>Start</strong> bot của bạn trước!
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <button type="submit" class="btn btn-primary">
+                      <span class="material-symbols-outlined">save</span> Lưu Cấu Hình Telegram
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="JoyApp.testTelegramBot()">
+                      <span class="material-symbols-outlined">send</span> Gửi Tin Nhắn Kiểm Tra
+                    </button>
+                    <span id="telegramTestResult" style="font-size: 12.5px; margin-left: 8px;"></span>
+                  </div>
+                </form>
+              </div>
+
+              <!-- SYSTEM ENVIRONMENT & SECURITY STATUS CARD -->
+              <div class="card" style="border-left: 4px solid #10b981;">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <h3 class="card-title" style="display: flex; align-items: center; gap: 10px;">
+                      <span class="material-symbols-outlined" style="color: #10b981;">dns</span>
+                      Thông Tin Hạ Tầng &amp; Trạng Thái Vận Hành
+                    </h3>
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
+                      <span class="material-symbols-outlined" style="font-size: 13px; vertical-align: middle;">sensors</span> Online 100%
+                    </span>
+                  </div>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px; line-height: 1.6;">
+                  Hệ thống hoạt động với kiến trúc Offline-First Serverless hiện đại, mã hóa bảo mật toàn bộ dữ liệu tại máy khách và đồng bộ bảo mật tức thời qua Vercel Edge.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; background: var(--bg-surface-alt); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <span style="color: var(--text-secondary); display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                      <span class="material-symbols-outlined" style="font-size: 18px; color: var(--joy-primary);">cloud</span>
+                      Nền Tảng Máy Chủ
+                    </span>
+                    <strong style="color: var(--text-main); font-weight: 600; font-size: 13px;">Vercel Edge Network / Global CDN</strong>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; background: var(--bg-surface-alt); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <span style="color: var(--text-secondary); display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                      <span class="material-symbols-outlined" style="font-size: 18px; color: #0284c7;">database</span>
+                      Lưu Trữ Dữ Liệu
+                    </span>
+                    <strong style="color: var(--text-main); font-weight: 600; font-size: 13px;">LocalStorage Client-Side (Offline First)</strong>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; background: var(--bg-surface-alt); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <span style="color: var(--text-secondary); display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                      <span class="material-symbols-outlined" style="font-size: 18px; color: #8b5cf6;">lock</span>
+                      Xác Thực Đăng Nhập
+                    </span>
+                    <strong style="color: #059669; font-weight: 600; font-size: 13px;">Telegram 2FA OTP + Master Key</strong>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; background: var(--bg-surface-alt); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                    <span style="color: var(--text-secondary); display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                      <span class="material-symbols-outlined" style="font-size: 18px; color: #f59e0b;">terminal</span>
+                      Phiên Bản Ứng Dụng
+                    </span>
+                    <strong style="color: var(--text-main); font-weight: 600; font-size: 13px;">JoyGames HR Portal v1.2.0 (2026)</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CỘT 2 (PHẢI): SAO LƯU & PHỤC HỒI DỮ LIỆU -->
+            <div class="settings-col">
+              <!-- EXPORT BACKUP JSON CARD -->
+              <div class="card" style="border-left: 4px solid var(--joy-primary);">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; margin-bottom: 16px;">
                   <h3 class="card-title" style="display: flex; align-items: center; gap: 10px;">
-                    <span class="material-symbols-outlined" style="color: #0284c7;">verified_user</span>
-                    Bảo Mật Xác Thực 2 Lớp (2FA) Qua Telegram OTP
+                    <span class="material-symbols-outlined" style="color: var(--joy-primary);">cloud_download</span>
+                    Xuất Sao Lưu Dữ Liệu (Backup JSON)
                   </h3>
-                  <span class="badge" id="telegramStatusBadge" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
-                    <span class="material-symbols-outlined" style="font-size: 13px; vertical-align: middle;">check_circle</span> Đang Kích Hoạt
-                  </span>
                 </div>
-              </div>
-
-              <p style="color: var(--text-secondary); margin-bottom: 18px; font-size: 13.5px; line-height: 1.6;">
-                Mỗi khi đăng nhập vào hệ thống quản lý nhân sự JoyGames, mã xác thực OTP 6 số sẽ được gửi trực tiếp tới tài khoản <strong>Telegram</strong> của bạn để ngăn chặn tuyệt đối truy cập trái phép vào hồ sơ bảo mật.
-              </p>
-
-              <form id="telegramSettingsForm" onsubmit="JoyApp.saveTelegramConfig(event)">
-                <div class="form-grid" style="grid-template-columns: 1fr; gap: 14px; margin-bottom: 18px;">
-                  <div class="form-group">
-                    <label class="form-label" style="display: flex; justify-content: space-between;">
-                      <span>Telegram Bot Token <span class="req">*</span></span>
-                      <a href="https://t.me/BotFather" target="_blank" style="font-size: 12px; color: #0284c7; font-weight: 600; text-decoration: none;">
-                        Lấy từ @BotFather ↗
-                      </a>
-                    </label>
-                    <input type="password" class="form-control" id="cfgTelegramBotToken" placeholder="Ví dụ: 7891234567:AAFnB9..." style="font-family: monospace;" />
-                    <span style="font-size: 12px; color: var(--text-muted); margin-top: 5px; display: block;">
-                      Tạo bot miễn phí bằng cách chat <code style="background: var(--bg-surface-alt); padding: 2px 6px; border-radius: 4px; color: var(--joy-primary); font-weight: 600; border: 1px solid var(--border-subtle);">/newbot</code> với @BotFather trên Telegram.
-                    </span>
-                  </div>
-
-                  <div class="form-group">
-                    <label class="form-label" style="display: flex; justify-content: space-between;">
-                      <span>Telegram Chat ID / User ID Người Nhận OTP <span class="req">*</span></span>
-                      <a href="https://t.me/userinfobot" target="_blank" style="font-size: 12px; color: #0284c7; font-weight: 600; text-decoration: none;">
-                        Lấy từ @userinfobot ↗
-                      </a>
-                    </label>
-                    <input type="text" class="form-control" id="cfgTelegramChatId" placeholder="Ví dụ: 987654321 hoặc -100xxxx (ID nhóm)" style="font-family: monospace;" />
-                    <span style="font-size: 12px; color: var(--text-muted); margin-top: 5px; display: block;">
-                      Chat bất kỳ tin nhắn nào tới @userinfobot trên Telegram để lấy số ID cá nhân của bạn. Nhớ ấn <strong>Start</strong> bot của bạn trước!
-                    </span>
-                  </div>
-                </div>
-
-                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                  <button type="submit" class="btn btn-primary">
-                    <span class="material-symbols-outlined">save</span> Lưu Cấu Hình Telegram
-                  </button>
-                  <button type="button" class="btn btn-secondary" onclick="JoyApp.testTelegramBot()">
-                    <span class="material-symbols-outlined">send</span> Gửi Tin Nhắn Kiểm Tra
-                  </button>
-                  <span id="telegramTestResult" style="font-size: 12.5px; margin-left: 8px;"></span>
-                </div>
-              </form>
-            </div>
-
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <span class="material-symbols-outlined" style="color: var(--joy-primary)">cloud_download</span>
-                  Xuất Sao Lưu Dữ Liệu (Backup JSON)
-                </h3>
-              </div>
-              <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px;">
-                Tải về toàn bộ hồ sơ nhân viên JoyGames, danh mục tài liệu số và lịch sử công tác dưới dạng file JSON. Có thể dùng để lưu trữ định kỳ hoặc chuyển sang thiết bị khác.
-              </p>
-              <button class="btn btn-primary" onclick="HRStorage.exportBackupJSON()">
-                <span class="material-symbols-outlined">download</span> Tải File Sao Lưu (.JSON)
-              </button>
-            </div>
-
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <span class="material-symbols-outlined" style="color: var(--joy-accent-yellow)">cloud_upload</span>
-                  Khôi Phục Dữ Liệu Từ File Sao Lưu
-                </h3>
-              </div>
-              <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px;">
-                Nhập file JSON đã sao lưu trước đó để khôi phục toàn bộ hệ thống.
-              </p>
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <input type="file" id="importJsonFileInput" accept=".json" style="display: none;" onchange="JoyApp.handleImportFile(event)">
-                <button class="btn btn-secondary" onclick="document.getElementById('importJsonFileInput').click()">
-                  <span class="material-symbols-outlined">folder_open</span> Chọn File Backup .JSON
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px; line-height: 1.6;">
+                  Tải về toàn bộ hồ sơ nhân viên JoyGames, danh mục tài liệu số và lịch sử công tác dưới dạng file JSON. Có thể dùng để lưu trữ định kỳ hoặc chuyển sang thiết bị khác an toàn.
+                </p>
+                <button class="btn btn-primary" onclick="HRStorage.exportBackupJSON()">
+                  <span class="material-symbols-outlined">download</span> Tải File Sao Lưu (.JSON)
                 </button>
               </div>
-            </div>
 
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <span class="material-symbols-outlined" style="color: var(--joy-accent-red)">restart_alt</span>
-                  Khôi Phục Dữ Liệu Mẫu JoyGames
-                </h3>
+              <!-- RESTORE FROM JSON FILE CARD -->
+              <div class="card" style="border-left: 4px solid var(--joy-accent-yellow);">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; margin-bottom: 16px;">
+                  <h3 class="card-title" style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-symbols-outlined" style="color: var(--joy-accent-yellow);">cloud_upload</span>
+                    Khôi Phục Dữ Liệu Từ File Sao Lưu
+                  </h3>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px; line-height: 1.6;">
+                  Nhập file JSON đã sao lưu trước đó để khôi phục toàn bộ hệ thống hồ sơ và tài liệu số của doanh nghiệp.
+                </p>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                  <input type="file" id="importJsonFileInput" accept=".json" style="display: none;" onchange="JoyApp.handleImportFile(event)">
+                  <button class="btn btn-secondary" onclick="document.getElementById('importJsonFileInput').click()">
+                    <span class="material-symbols-outlined">folder_open</span> Chọn File Backup .JSON
+                  </button>
+                </div>
               </div>
-              <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px;">
-                Đặt lại toàn bộ hệ thống về danh sách 12 nhân sự mẫu tiêu biểu của JoyGames (Studio Haki, Pixel, B21 ARPG...). Thao tác này sẽ ghi đè dữ liệu hiện có.
-              </p>
-              <button class="btn btn-danger" onclick="JoyApp.resetDemoData()">
-                <span class="material-symbols-outlined">restore</span> Khôi Phục Dữ Liệu Mẫu Ban Đầu
-              </button>
+
+              <!-- RESTORE DEMO DATA CARD -->
+              <div class="card" style="border-left: 4px solid var(--joy-accent-red);">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-subtle); padding-bottom: 14px; margin-bottom: 16px;">
+                  <h3 class="card-title" style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-symbols-outlined" style="color: var(--joy-accent-red);">restart_alt</span>
+                    Khôi Phục Dữ Liệu Mẫu JoyGames
+                  </h3>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 13.5px; line-height: 1.6;">
+                  Đặt lại toàn bộ hệ thống về danh sách 12 nhân sự mẫu tiêu biểu của JoyGames (Studio Haki, Pixel, B21 ARPG...). Thao tác này sẽ ghi đè dữ liệu hiện có.
+                </p>
+                <button class="btn btn-danger" onclick="JoyApp.resetDemoData()">
+                  <span class="material-symbols-outlined">restore</span> Khôi Phục Dữ Liệu Mẫu Ban Đầu
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -676,18 +738,18 @@
         <!-- Rendered dynamically -->
       </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="JoyApp.printEmployeeProfile()">
-          <span class="material-symbols-outlined">print</span> In Hồ Sơ A4
+      <div class="modal-footer emp-detail-footer">
+        <button class="btn btn-secondary" onclick="JoyApp.printEmployeeProfile()" title="In Hồ Sơ A4">
+          <span class="material-symbols-outlined">print</span> In A4
         </button>
-        <button class="btn btn-secondary" id="btnDetailEdit">
-          <span class="material-symbols-outlined">edit</span> Chỉnh Sửa
+        <button class="btn btn-secondary" id="btnDetailEdit" title="Chỉnh Sửa Hồ Sơ">
+          <span class="material-symbols-outlined">edit</span> Sửa
         </button>
-        <button class="btn btn-danger" id="btnDetailDelete">
-          <span class="material-symbols-outlined">delete</span> Xóa Hồ Sơ
+        <button class="btn btn-danger" id="btnDetailDelete" title="Xóa Hồ Sơ">
+          <span class="material-symbols-outlined">delete</span> Xóa
         </button>
-        <button class="btn btn-primary" onclick="JoyApp.closeModal('modalEmpDetail')">
-          Đóng
+        <button class="btn btn-primary" onclick="JoyApp.closeModal('modalEmpDetail')" title="Đóng cửa sổ">
+          <span class="material-symbols-outlined">close</span> Đóng
         </button>
       </div>
     </div>
